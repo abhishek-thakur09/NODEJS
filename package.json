@@ -1,0 +1,23 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "This is my dev tinder app",
+  "homepage": "https://github.com/abhishek-thakur09/NODEJS#readme",
+  "bugs": {
+    "url": "https://github.com/abhishek-thakur09/NODEJS/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhishek-thakur09/NODEJS.git"
+  },
+  "license": "ISC",
+  "author": "Abhishek Thakur",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
