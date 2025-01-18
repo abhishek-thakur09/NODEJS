@@ -3,45 +3,29 @@ const express = require('express');
 
 const app = express()
 
+app.use("/", (req, res, next)=>{
+    console.log("successfully send..");
+    res.send("request send by 1st route handler.")
+    next();
+})
 
-// app.get("/text", (req, res)=>{
-//     res.send("hey this is text");
-// })
-
-
-// app.delete("/text", (req, res)=>{
-//     res.send("hey this is api deleted test");
-// })
-
-// app.use("/text", (req, res)=>{
-//     res.send("hey my name is abhishek")
-// })
-
-// app.patch("/text", (req, res)=>{
-//     res.send("Our server is patch!!")
-// })
-
-app.use("/test", (req, res, next)=>{
-
-    // res.send("this is my first responce!!");
-    console.log("1");
+app.get("/text", (req, res, next)=>{
+    res.send("request send by 2nd route handler.");
     next();
 },
 (req, res, next)=>{
-    // res.send("this is my 2nd res!!");
-    console.log("2");
+    res.send("request send by 3rd route handler.");
     next();
 },
 (req, res, next)=>{
-    res.send("this is my 3rd res!!");
-    console.log("3");
+    res.send("request send by 4th route handler.");
     next();
 },
 (req, res, next)=>{
-    res.send("this is my 4th res!!");
-    console.log("4");
-    next();
+    res.send("request send by 5th route handler.");
+    // next();
 }
+
 
 )
 
