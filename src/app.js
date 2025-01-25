@@ -51,7 +51,7 @@ app.get("/user", async(req, res)=>{
     const user = await User.findOne({emailId: "Anshul@gmail.com"})
 
     try{
-        
+
         res.send(user);
         console.log(user);
         
@@ -61,9 +61,23 @@ app.get("/user", async(req, res)=>{
 
 })
 
+// Delete data from database
+app.delete("/user", async (req, res)=>{
+    const userId = req.body.userId;
 
+    // for delete the user from the database...
+    const user = await User.findByIdAndDelete(userId);
+    
+    try{
+            res.send("data deleted successfully...!");
+            console.log(user);
 
+            
+    }catch(err){
+        res.status(401).send("Something went wrong!!");
+    }
 
+})
 
 
 
