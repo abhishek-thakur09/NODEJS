@@ -19,7 +19,7 @@ app.post("/signup", async (req, res)=>{
     //     emailId : "Palak@gmail.com",
     //     Age : 20
     // }
-    const user = new User(req.body)
+    const user = User(req.body)
 
 try{
     await user.save();
@@ -30,6 +30,38 @@ catch(error){
 }
 
 })
+
+
+// Get data from the database. For this we are using Get API methods....
+app.get("/feed", async(req, res)=>{
+        const user = await User.find({});
+        try{
+            console.log(user);
+            res.send(user);
+        }
+        catch (err){
+            res.status(401).send("Something went wrong!!");
+        }
+
+})
+
+
+app.get("/user", async(req, res)=>{
+
+    const user = await User.findOne({emailId: "Anshul@gmail.com"})
+
+    try{
+        
+        res.send(user);
+        console.log(user);
+        
+    }catch(err){
+        res.status(401).send("Something went wrong!!");
+    }
+
+})
+
+
 
 
 
