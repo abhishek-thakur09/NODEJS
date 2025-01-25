@@ -4,20 +4,25 @@ const connectdb = require("./config/database");
 const User = require("./model/user")
 const app = express();
 
+// middleware to convert our input data into json
+app.use(express.json());
 
 
-app.post("/signup", (req, res)=>{
+app.post("/signup", async (req, res)=>{
 
-    const userobj = {
-        firstName: "shweta",
-        lastName: "bhanwal",
-        emailId : "Shaweta@gmail.com",
-        Age : 20
-    }
+// console.log(req.body);
+
+
+    // const userobj = {
+    //     firstName: "Palak",
+    //     lastName: "Thakur",
+    //     emailId : "Palak@gmail.com",
+    //     Age : 20
+    // }
+    const user = new User(req.body)
 
 try{
-    const user = new User(userobj)
-    user.save();
+    await user.save();
     res.send("data send successfully..")
 }
 catch(error){
