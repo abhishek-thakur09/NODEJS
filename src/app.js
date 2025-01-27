@@ -8,9 +8,9 @@ const app = express();
 app.use(express.json());
 
 
-app.post("/signup", async (req, res)=>{
+app.post("/signup", async (req, res) => {
 
-// console.log(req.body);
+    // console.log(req.body);
 
 
     // const userobj = {
@@ -21,75 +21,95 @@ app.post("/signup", async (req, res)=>{
     // }
     const user = User(req.body)
 
-try{
-    await user.save();
-    res.send("data send successfully..")
-}
-catch(error){
-    console.error("This is our error Please fix it first : ", error.message);
-}
+    try {
+        await user.save();
+        res.send("data send successfully..")
+    }
+    catch (error) {
+        console.error("This is our error Please fix it first : ", error.message);
+    }
 
 })
 
 
 // Get data from the database. For this we are using Get API methods....
-app.get("/feed", async(req, res)=>{
-        const user = await User.find({});
-        try{
-            console.log(user);
-            res.send(user);
-        }
-        catch (err){
-            res.status(401).send("Something went wrong!!");
-        }
+app.get("/feed", async (req, res) => {
+    const user = await User.find({});
+    try {
+        console.log(user);
+        res.send(user);
+    }
+    catch (err) {
+        res.status(401).send("Something went wrong!!");
+    }
 
 })
 
 
-app.get("/user", async(req, res)=>{
+app.get("/user", async (req, res) => {
 
-    const user = await User.findOne({emailId: "Anshul@gmail.com"})
+    const user = await User.findOne({ emailId: "Anshul@gmail.com" })
 
-    try{
+    try {
 
         res.send(user);
         console.log(user);
-        
-    }catch(err){
+
+    } catch (err) {
         res.status(401).send("Something went wrong!!");
     }
 
 })
 
 // Delete data from database
-app.delete("/user", async (req, res)=>{
+app.delete("/user", async (req, res) => {
     const userId = req.body.userId;
 
     // for delete the user from the database...
     const user = await User.findByIdAndDelete(userId);
-    
-    try{
-            res.send("data deleted successfully...!");
-            console.log(user);
 
-            
-    }catch(err){
+    try {
+        res.send("data deleted successfully...!");
+        console.log(user);
+
+
+    } catch (err) {
         res.status(401).send("Something went wrong!!");
+    }
+
+})
+
+app.patch("/user", async (req, res) => {
+
+    const userid = req.body.userId;
+    const data = req.body;
+
+    try {
+        const user = await User.findByIdAndUpdate({ _id: userid }, data, {returnDocument: "after"});
+        console.log(user);
+        res.send("data updated successfully!!");
+
+    } catch (err) {
+        res.status(401).send("something went wrong..");
     }
 
 })
 
 
 
-connectdb().then(()=>{
+
+
+
+
+connectdb().then(() => {
     console.log("database connection is successfull!!");
 
     // in above line we connect our database  then we make our prepared to listening the requests....
 
-    app.listen(9999, ()=>{
+    app.listen(9999, () => {
         console.log("Our server is running successfully in 9999");
     })
-}).catch((err) =>{
+}).catch((err) => {
     console.error("database cannot be connected");
 });
 
