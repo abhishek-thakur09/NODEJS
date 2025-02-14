@@ -79,12 +79,27 @@ app.delete("/user", async (req, res) => {
 
 })
 
-app.patch("/user", async (req, res) => {
+app.patch("/user/:userId", async (req, res) => {
 
-    const userid = req.body.userId;
+    const userid = req.params?.userId;
     const data = req.body;
 
+
     try {
+
+        // Api level validation..
+        const Allowed_Updates = ["Age","skill"];
+        const IsUpdate = Object.keys(data).every((k)=> Allowed_Updates.includes(k));
+    
+        if(!IsUpdate){
+            throw new Error("Failed to Update..");
+        }
+
+        if(data?.skill.length > 5){
+            throw new Error("Skill must be in Limit..");
+        }
+
+
         const user = await User.findByIdAndUpdate({ _id: userid }, data, {returnDocument: "after"});
         console.log(user);
         res.send("data updated successfully!!");
