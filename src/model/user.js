@@ -4,20 +4,26 @@ const mongoose = require("mongoose");
 
 const UserSchema = mongoose.Schema({
     firstName:{
-        type: String
+        type: String,
+        required: true
     },
     lastName : {
-        type: String
+        type: String,
+        required: true
     },
     emailId : {
-        type: String
+        type: String,
+        required: true,
+        lowercase:true
     },
     password : {
-        type :  String
+        type :  String,
+        // required: true
     },
     age : {
         type :  Number
-    }
+    },
+    skill : []
 });
 
 // Now make modle of user schema
