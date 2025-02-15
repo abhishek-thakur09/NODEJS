@@ -1,6 +1,9 @@
 
 const mongoose = require("mongoose");
 
+const validator = require("validator");
+console.log(validator);
+
 
 const UserSchema = mongoose.Schema({
     firstName:{
