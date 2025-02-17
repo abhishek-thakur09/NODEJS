@@ -3,12 +3,19 @@ const express = require('express');
 const connectdb = require("./config/database");
 const User = require("./model/user")
 const app = express();
+const bcrypt = require('bcrypt');
+const { ValidationsignUp } = require("./utils/validation");
+
 
 // middleware to convert our input data into json
 app.use(express.json());
 
 
 app.post("/signup", async (req, res) => {
+    // Never trust on req.body
+
+    // Validation of data should be necessary 
+
 
     // console.log(req.body);
 
@@ -19,14 +26,36 @@ app.post("/signup", async (req, res) => {
     //     emailId : "Palak@gmail.com",
     //     Age : 20
     // }
-    const user = User(req.body)
 
     try {
+        // console.log(req.body.password);
+
+        // 1. validation of user
+        ValidationsignUp(req);
+
+        // 2. Encrypt our password.
+        const {firstName, lastName, emailId, password} = req.body;
+
+        // const passwordHash = bcrypt.hash(password, 10).then(function (pass) {
+        //     // console.log(pass);
+        //     return pass;
+        // });
+        const passwordHash = bcrypt.hashSync(password, 10);
+
+        
+        // const user = new User(req.body)
+        const user = new User({
+            firstName, lastName, emailId, password: passwordHash
+        })
+
+
+
+        
         await user.save();
         res.send("data send successfully..")
     }
     catch (error) {
-        console.error("This is our error Please fix it first : ", error.message);
+        res.status(400).send("This is our error Please fix it first : " + error.message);
     }
 
 })
@@ -88,19 +117,19 @@ app.patch("/user/:userId", async (req, res) => {
     try {
 
         // Api level validation..
-        const Allowed_Updates = ["Age","skill"];
-        const IsUpdate = Object.keys(data).every((k)=> Allowed_Updates.includes(k));
-    
-        if(!IsUpdate){
+        const Allowed_Updates = ["Age", "skill"];
+        const IsUpdate = Object.keys(data).every((k) => Allowed_Updates.includes(k));
+
+        if (!IsUpdate) {
             throw new Error("Failed to Update..");
         }
 
-        if(data?.skill.length > 5){
+        if (data?.skill.length > 5) {
             throw new Error("Skill must be in Limit..");
         }
 
 
-        const user = await User.findByIdAndUpdate({ _id: userid }, data, {returnDocument: "after"});
+        const user = await User.findByIdAndUpdate({ _id: userid }, data, { returnDocument: "after" });
         console.log(user);
         res.send("data updated successfully!!");
 
