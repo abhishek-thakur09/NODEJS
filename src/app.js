@@ -4,11 +4,17 @@ const connectdb = require("./config/database");
 const User = require("./model/user")
 const app = express();
 const bcrypt = require('bcrypt');
+const validator = require("validator");
 const { ValidationsignUp } = require("./utils/validation");
+const cookieParser = require('cookie-parser');
+const jwt = require("jsonwebtoken");
 
 
 // middleware to convert our input data into json
 app.use(express.json());
+app.use(cookieParser());
+
+
 
 
 app.post("/signup", async (req, res) => {
@@ -47,9 +53,6 @@ app.post("/signup", async (req, res) => {
         const user = new User({
             firstName, lastName, emailId, password: passwordHash
         })
-
-
-
         
         await user.save();
         res.send("data send successfully..")
@@ -59,6 +62,84 @@ app.post("/signup", async (req, res) => {
     }
 
 })
+
+
+// LOGIN Api   small authantication ~
+app.post("/login", async(req, res)=>{
+
+    try{
+            const {emailId, password} = req.body;
+
+            if(!validator.isEmail(emailId)){
+                res.status(404).send("Invalid credentials..");
+            }
+
+            const user = await User.findOne({emailId});
+            if(!user){
+                res.status(404).send("Invalid credentials..");
+            }
+
+            const isValidUser = await bcrypt.compare(password, user.password);
+            if(isValidUser){
+
+                // Create a JWT token
+                const token = await jwt.sign({_id: user._id}, "HEY@0911");
+                console.log(token);
+                
+                // add a token to cookie and response the cookie back to the user...  send the cookie!
+                res.cookie("token", token);
+
+               res.status(200).send("Login successfully..");
+            }
+            else{
+                res.status(404).send("Invalid credentials..");
+            }
+
+
+    }  catch (error) {
+        res.status(400).send("Error : " + error.message);
+    }
+
+})
+
+
+//PROFILE API
+// cookie handling
+app.get("/profile", async(req, res)=>{
+
+    try{
+        const cookie = req.cookies;
+
+        const {token} = cookie;
+
+        if(!token) {
+            throw new Error("Invalid Token...")
+        }
+
+        // validate my token
+        
+        const decodedmsg = await jwt.verify(token, "HEY@0911");
+        console.log(decodedmsg);
+        
+        const {_id} = decodedmsg;
+        console.log("my user is " + _id);
+        
+        const user = await User.findById(_id);
+        if(!user){
+            throw new Error("Invalid doesn't exist Please login again..")
+        }
+        // const { _id } = decodedmsg;
+        // console.log("the logged in user is " + _id);
+        // res.send("reading....");
+        res.send(user);
+
+    }
+    catch (error) {
+        res.status(400).send("Error : " + error.message);
+    }
+
+})
+
 
 
 // Get data from the database. For this we are using Get API methods....
