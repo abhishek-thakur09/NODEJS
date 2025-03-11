@@ -8,6 +8,9 @@ const connectdb = async ()=>{
 };
 
 
+
+
+
 module.exports = connectdb; 
 
 // it is a bad way very first you have to make a connection with your dataase then you will listening the requests

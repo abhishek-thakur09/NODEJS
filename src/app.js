@@ -1,13 +1,15 @@
 
 const express = require('express');
 const connectdb = require("./config/database");
-const User = require("./model/user")
+const User = require("./model/user");
 const app = express();
 const bcrypt = require('bcrypt');
 const validator = require("validator");
 const { ValidationsignUp } = require("./utils/validation");
 const cookieParser = require('cookie-parser');
 const jwt = require("jsonwebtoken");
+
+const {userAuth}  = require("./middlewares/auth");
 
 
 // middleware to convert our input data into json
@@ -79,15 +81,15 @@ app.post("/login", async(req, res)=>{
                 res.status(404).send("Invalid credentials..");
             }
 
-            const isValidUser = await bcrypt.compare(password, user.password);
-            if(isValidUser){
+            const isValidUser = await user.validatePassword(password);
 
-                // Create a JWT token
-                const token = await jwt.sign({_id: user._id}, "HEY@0911");
+            if(isValidUser){
+                // Create a JWT token  && also expiration of token
+                const token = await user.getJWT();
                 console.log(token);
                 
-                // add a token to cookie and response the cookie back to the user...  send the cookie!
-                res.cookie("token", token);
+                // add a token to cookie and response the cookie back to the user...  send the cookie! && also expiration of token
+                res.cookie("token", token , { expires: new Date(Date.now() + 8 * 3600000) });
 
                res.status(200).send("Login successfully..");
             }
@@ -105,32 +107,12 @@ app.post("/login", async(req, res)=>{
 
 //PROFILE API
 // cookie handling
-app.get("/profile", async(req, res)=>{
+app.get("/profile", userAuth, async(req, res)=>{
 
     try{
-        const cookie = req.cookies;
+        const user = req.user;
 
-        const {token} = cookie;
-
-        if(!token) {
-            throw new Error("Invalid Token...")
-        }
-
-        // validate my token
-        
-        const decodedmsg = await jwt.verify(token, "HEY@0911");
-        console.log(decodedmsg);
-        
-        const {_id} = decodedmsg;
-        console.log("my user is " + _id);
-        
-        const user = await User.findById(_id);
-        if(!user){
-            throw new Error("Invalid doesn't exist Please login again..")
-        }
-        // const { _id } = decodedmsg;
-        // console.log("the logged in user is " + _id);
-        // res.send("reading....");
+        console.log(user);
         res.send(user);
 
     }
@@ -143,85 +125,10 @@ app.get("/profile", async(req, res)=>{
 
 
 // Get data from the database. For this we are using Get API methods....
-app.get("/feed", async (req, res) => {
-    const user = await User.find({});
-    try {
-        console.log(user);
-        res.send(user);
-    }
-    catch (err) {
-        res.status(401).send("Something went wrong!!");
-    }
-
+app.post("/sendConnectionRequest",userAuth, async (req, res)=>{
+    const user = req.user;
+    res.send(user.firstName + " send request successfully..");
 })
-
-
-app.get("/user", async (req, res) => {
-
-    const user = await User.findOne({ emailId: "Anshul@gmail.com" })
-
-    try {
-
-        res.send(user);
-        console.log(user);
-
-    } catch (err) {
-        res.status(401).send("Something went wrong!!");
-    }
-
-})
-
-// Delete data from database
-app.delete("/user", async (req, res) => {
-    const userId = req.body.userId;
-
-    // for delete the user from the database...
-    const user = await User.findByIdAndDelete(userId);
-
-    try {
-        res.send("data deleted successfully...!");
-        console.log(user);
-
-
-    } catch (err) {
-        res.status(401).send("Something went wrong!!");
-    }
-
-})
-
-app.patch("/user/:userId", async (req, res) => {
-
-    const userid = req.params?.userId;
-    const data = req.body;
-
-
-    try {
-
-        // Api level validation..
-        const Allowed_Updates = ["Age", "skill"];
-        const IsUpdate = Object.keys(data).every((k) => Allowed_Updates.includes(k));
-
-        if (!IsUpdate) {
-            throw new Error("Failed to Update..");
-        }
-
-        if (data?.skill.length > 5) {
-            throw new Error("Skill must be in Limit..");
-        }
-
-
-        const user = await User.findByIdAndUpdate({ _id: userid }, data, { returnDocument: "after" });
-        console.log(user);
-        res.send("data updated successfully!!");
-
-    } catch (err) {
-        res.status(401).send("something went wrong..");
-    }
-
-})
-
-
-
 
 
 
