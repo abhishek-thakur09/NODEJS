@@ -12,6 +12,7 @@ const UserSchema = mongoose.Schema({
     firstName:{
         type: String,
         required: true,
+        index: true,
     },
     lastName : {
         type: String,
@@ -20,7 +21,8 @@ const UserSchema = mongoose.Schema({
     emailId : {
         type: String,
         required: true,
-        lowercase:true
+        lowercase:true,
+        unique: true,
         // validate: (val)=>{
         //     if(!validator.isEmail(val)){
         //         throw new Error("Email is not valid..");
@@ -37,12 +39,18 @@ const UserSchema = mongoose.Schema({
         // }
 
     },
+    about: {
+        type: String,
+    },
     age : {
         type :  Number
     },
     skill : []
 });
 
+
+// Compound index on firstName and LastName
+// UserSchema.index({firstName:1, lastName: 1});
 
 UserSchema.methods.getJWT = async function(){
 
@@ -68,6 +76,7 @@ UserSchema.methods.validatePassword = async function(passwordInputByuser) {
 
 
 // Now make modle of user schema
+// And how to export a model of our schema.
 
 UserModel = mongoose.model("user", UserSchema);
 
