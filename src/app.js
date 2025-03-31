@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const AuthRouter = require('./Routes/Auth');
 const ProfileRouter = require('./Routes/Profile');
 const RequestRouter = require('./Routes/Request');
+const UserRouter = require('./Routes/user');
 
 // middleware to convert our input data into json
 app.use(express.json());
@@ -20,6 +21,7 @@ app.use("/", ProfileRouter);
 
 app.use("/", RequestRouter);
 
+app.use("/", UserRouter);
 
 
 
