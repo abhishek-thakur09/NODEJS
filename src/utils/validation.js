@@ -20,6 +20,7 @@ const validateupdateProfileData = (req)=>{
         "firstName",
         "lastName",
         "emailId",
+        "photoUrl",
         "about",
         "age",
         "skill"
