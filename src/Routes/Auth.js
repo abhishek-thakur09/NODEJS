@@ -34,7 +34,15 @@ AuthRouter.post("/signup", async (req, res) => {
         ValidationsignUp(req);
 
         // 2. Encrypt our password.
-        const {firstName, lastName, emailId, password} = req.body;
+        const {  firstName,
+            lastName,
+            emailId,
+            password,
+            gender,
+            photoUrl,
+            about,
+            age,
+            skill} = req.body;
 
         // const passwordHash = bcrypt.hash(password, 10).then(function (pass) {
         //     // console.log(pass);
@@ -45,11 +53,17 @@ AuthRouter.post("/signup", async (req, res) => {
         
         // const user = new User(req.body)
         const user = new User({
-            firstName, lastName, emailId, password: passwordHash
+            firstName, lastName, emailId, password: passwordHash, gender, photoUrl, about, age,skill
         })
         
-        await user.save();
-        res.send("data send successfully..")
+       const savedUser =  await user.save();
+       const token = await savedUser.getJWT();
+
+        res.cookie('token', token, {
+            expires: new Date(Date.now() + 8 * 3600000),
+        });
+
+        res.json({message: "user added successfully! ", data: savedUser});
     }
     catch (error) {
         res.status(400).send("This is our error Please fix it first : " + error.message);
@@ -77,16 +91,16 @@ AuthRouter.post("/login", async(req, res)=>{
             const isValidUser = await user.validatePassword(password);
 
             if(isValidUser){
-                // Create a JWT token  && also expiration of token
+              // Create a JWT token  && also expiration of token
                 const token = await user.getJWT();
                 console.log(token);
                 
                 // add a token to cookie and response the cookie back to the user...  send the cookie! && also expiration of token
                 res.cookie("token", token , { expires: new Date(Date.now() + 8 * 3600000) });
 
-               res.status(200).send("Login successfully..");
+               res.status(200).send(user);
             }
-            else{
+            else{ 
                 res.status(404).send("Invalid credentials..");
             }
 
@@ -99,7 +113,7 @@ AuthRouter.post("/login", async(req, res)=>{
 
 // LOGOUT Api...
 
-AuthRouter.post("/logout", async(req, res)=>{
+AuthRouter.post("/logout", async(req, res)=>{ 
         try{
 
              res.cookie("token", null, {expires: new Date(Date.now())});

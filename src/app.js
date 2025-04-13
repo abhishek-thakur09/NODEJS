@@ -9,6 +9,16 @@ const AuthRouter = require('./Routes/Auth');
 const ProfileRouter = require('./Routes/Profile');
 const RequestRouter = require('./Routes/Request');
 const UserRouter = require('./Routes/user');
+const cors = require("cors");
+
+// its tell us where is our frontend is hoisted 
+app.use(
+    cors(
+    {
+        origin: "http://localhost:5173",
+        credentials:true,
+    }
+));
 
 // middleware to convert our input data into json
 app.use(express.json());

@@ -100,7 +100,7 @@ UserRouter.get("/user/feed", userAuth, async (req, res) => {
             $and: [{ _id: { $nin: Array.from(hideUserFromFeed) } }, //nin -> not in this array
             { _id: { $ne: loggedInUser._id } },// ne -> not equal to this 
             ]
-        }).select("firstName lastName skill")
+        }).select("firstName lastName skill age gender photoUrl about")
         .skip(skip)
         .limit(limit);
 

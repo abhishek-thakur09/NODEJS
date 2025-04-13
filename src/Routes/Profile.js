@@ -37,6 +37,8 @@ ProfileRouter.patch("/profile/update",userAuth, async(req, res)=>{
 
         Object.keys(req.body).forEach((key)=> (Loggedinuser[key] = req.body[key] ))
 
+        await Loggedinuser.save();
+
         console.log(Loggedinuser);
         res.send(`${Loggedinuser.firstName} your profile is updated..`);
 

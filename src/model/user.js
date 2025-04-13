@@ -8,49 +8,68 @@ const jwt = require("jsonwebtoken");
 
 
 
-const UserSchema = mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     firstName:{
         type: String,
         required: true,
-        index: true,
+        minLength:4,
+        maxLength:30,
     },
     lastName : {
         type: String,
-        required: true,
     },
     emailId : {
         type: String,
-        required: true,
         lowercase:true,
+        required: true,
         unique: true,
+        // trim: true,
         // validate: (val)=>{
         //     if(!validator.isEmail(val)){
         //         throw new Error("Email is not valid..");
         //     }
-        // }
+        // },
     },
     password : {
         type :  String,
-        required:true
-        // validate : (val)=>{
+        required:true,
+        // validate(val){
         //     if(!validator.isStrongPassword(val)){
         //         throw new Error("Choose a strong password...");
         //     }
-        // }
-
+        // },
     },
+    age : {
+        type :  Number,
+        min :18,
+    },
+        gender: {
+            type: String,
+            enum: {
+                values: ["male", "female", "others"],
+                message: `{VALUE} is incorrect status type`,
+            },
+        },
     photoUrl:{
         type: String,
+        default: "https://geographyandyou.com/images/user-profile.png",
+        // validate(value) {
+        //     if (!validator.isURL(value)) {
+        //       throw new Error("Invalid Photo URL: " + value);
+        //     }
+        //   },
     },
     about: {
         type: String,
+        default: "This is a default about of the user!",
     },
-    age : {
-        type :  Number
+    skill :{ 
+        type: [String],
     },
-    skill : []
+},
+{
+    timestamps: true,
 });
-
 
 // Compound index on firstName and LastName
 // UserSchema.index({firstName:1, lastName: 1});
@@ -59,10 +78,10 @@ UserSchema.methods.getJWT = async function(){
 
     const user = this;
 
-    const token = await jwt.sign({_id: user._id}, "HEY@0911" , {expiresIn: '1d'});
+    const token = await jwt.sign({_id: user._id}, "HEY@0911" , {expiresIn: '3d'});
 
     return token;
-}
+};
 
 UserSchema.methods.validatePassword = async function(passwordInputByuser) {
         const user = this;
