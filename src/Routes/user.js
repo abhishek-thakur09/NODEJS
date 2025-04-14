@@ -14,7 +14,7 @@ UserRouter.get("/user/requests/received", userAuth, async (req, res) => {
         const connectionRequest = await connectionrequest.find({
             toUserId: loggedInUser._id,
             Status: "interested",
-        }).populate("fromUserId", "firstName lastName about skill");
+        }).populate("fromUserId", "_id firstName lastName photoUrl age gender about skill");
         // }).populate("fromUserId", ["firstName" , "lastName"]);
 
         res.json({
@@ -40,8 +40,8 @@ UserRouter.get("/user/connections", userAuth, async (req, res) => {
                 { toUserId: loggedInUser._id, Status: "accepted", },
                 { fromUserId: loggedInUser._id, Status: "accepted" }
             ]
-        }).populate("fromUserId", "firstName lastName about skill")
-            .populate("toUserId", "firstName lastName about skill");
+        }).populate("fromUserId", "_id firstName lastName about age skill photoUrl gender")
+            .populate("toUserId", "_id firstName lastName about age skill photoUrl gender");
 
         console.log(loggedInUser._id);
 
