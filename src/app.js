@@ -10,10 +10,15 @@ const ProfileRouter = require('./Routes/Profile');
 const RequestRouter = require('./Routes/Request');
 const UserRouter = require('./Routes/user');
 const cors = require("cors");
+const http = require("http");
+const initializeServer = require("./utils/Socket");
+
+
+
 
 // its tell us where is our frontend is hoisted 
 app.use(
-    cors(
+     cors(
     {
         origin: "http://localhost:5173",
         credentials:true,
@@ -34,6 +39,10 @@ app.use("/", RequestRouter);
 app.use("/", UserRouter);
 
 
+const server = http.createServer(app);
+
+initializeServer(server);
+
 
 
 
@@ -42,7 +51,7 @@ connectdb().then(() => {
 
     // in above line we connect our database  then we make our prepared to listening the requests....
 
-    app.listen(9999, () => {
+    server.listen(9999, () => {
         console.log("Our server is running successfully in 9999");
     })
 }).catch((err) => {
