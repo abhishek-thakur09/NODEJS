@@ -19,3 +19,5 @@ const initializeServer = ()=>{
     })
 
 }
+
+module.exports = initializeServer;
