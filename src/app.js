@@ -12,6 +12,7 @@ const UserRouter = require('./Routes/user');
 const cors = require("cors");
 const http = require("http");
 const initializeServer = require("./utils/Socket");
+const chatRouter = require('./Routes/Chat');
 
 
 
@@ -38,11 +39,13 @@ app.use("/", RequestRouter);
 
 app.use("/", UserRouter);
 
+app.use("/", chatRouter);
 
+
+
+// This line means you will create a server on the top of express app
 const server = http.createServer(app);
 initializeServer(server);
-
-
 
 
 
