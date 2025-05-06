@@ -6,7 +6,7 @@ const { Chat } = require("../model/Chat");
 
 
 // Crypto is for secure our roomId
-const getSecureRoomid = ({ userID, target_id }) => {
+const getSecureRoomid = ( userID, target_id ) => {
     return crypto
         .createHash("sha256")
         .update([userID, target_id].sort().join("_"))
@@ -28,16 +28,15 @@ const initializeServer = (server) => {
 
     // Setup an event listener for new socket connection from clients
     io.on("connection", (socket) => {
-        socket.on("joinChat", ({ Name, userID, target_id, text }) => {
+        socket.on("joinChat", ({ firstName, userID, target_id}) => {
             const roomId = getSecureRoomid(userID, target_id);
             console.log(roomId);
 
-            console.log(Name + "= " + roomId);
+            console.log(firstName + " joined Room " + roomId);
             socket.join(roomId);
-
         });
 
-        socket.on("sendmessage", async ({ Name, userID, target_id, text }) => {
+        socket.on("sendmessage", async ({ firstName, userID, target_id, text }) => {
             try {
                 const roomId = getSecureRoomid(userID, target_id);
                
@@ -65,8 +64,8 @@ const initializeServer = (server) => {
 
                 await chat.save();
                 // ToDo: CHeck if userId and senderId are friends?
-                console.log(Name + " = " + roomId);
-                io.to(roomId).emit("messageReceived", { Name, text, TimeStamp: new Date() });
+                console.log(firstName + " = " + roomId);
+                io.to(roomId).emit("messageReceived", { firstName, text, TimeStamp: new Date() });
             }
             catch (err) {
                 console.log(err);
@@ -74,10 +73,10 @@ const initializeServer = (server) => {
 
         });
 
-        socket.on("disconnect", () => { });
-    })
+        socket.on("disconnect", () => {});
+    });
 
-}
+};
 
 module.exports = initializeServer;
 
