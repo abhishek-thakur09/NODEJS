@@ -12,7 +12,7 @@ const UserRouter = require('./Routes/user');
 const cors = require("cors");
 const http = require("http");
 const initializeServer = require("./utils/Socket");
-const chatRouter = require('./src/Routes/chat.js');
+const chatRouter = require('./Routes/chat.js');
 
 
 
