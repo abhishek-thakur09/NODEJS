@@ -12,7 +12,7 @@ const UserRouter = require('./Routes/user');
 const cors = require("cors");
 const http = require("http");
 const initializeServer = require("./utils/Socket");
-const chatRouter = require('./Routes/chat');
+const chatRouter = require('./src/Routes/chat.js');
 
 
 
@@ -57,7 +57,7 @@ connectdb().then(() => {
 
     // in above line we connect our database  then we make our prepared to listening the requests....
 
-    server.listen(3000, () => {
+    server.listen(9999, () => {
         console.log("Our server is running successfully in 9999");
     })
 }).catch((err) => {
