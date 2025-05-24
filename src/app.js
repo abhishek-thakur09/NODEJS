@@ -61,7 +61,7 @@ connectdb().then(() => {
         console.log("Our server is running successfully in 9999");
     })
 }).catch((err) => {
-    console.error("database cannot be connected" + err);
+    console.error("database cannot be connected" + err.message);
 });
 
 
