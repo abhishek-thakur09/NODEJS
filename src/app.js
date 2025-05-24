@@ -57,11 +57,11 @@ connectdb().then(() => {
 
     // in above line we connect our database  then we make our prepared to listening the requests....
 
-    server.listen(9999, () => {
+    server.listen(3000, () => {
         console.log("Our server is running successfully in 9999");
     })
 }).catch((err) => {
-    console.error("database cannot be connected");
+    console.error("database cannot be connected" + err);
 });
 
 
