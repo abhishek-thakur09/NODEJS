@@ -50,6 +50,9 @@ ProfileRouter.patch("/profile/update",userAuth, async(req, res)=>{
 })
 
 
+
+
+
 ProfileRouter.patch("/forgottPass", async(req, res)=>{
     try{
         
