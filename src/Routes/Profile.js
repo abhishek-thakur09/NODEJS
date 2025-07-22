@@ -1,64 +1,59 @@
-
-const express = require('express');
+const express = require("express");
 const ProfileRouter = express.Router();
 
-const {validateupdateProfileData} =  require("../utils/validation");
+const { validateupdateProfileData } = require("../utils/validation");
 
-const {userAuth}  = require("../middlewares/auth");
-
-
+const { userAuth } = require("../middlewares/auth");
+const multer = require("multer");
+const upload = multer();
 
 //PROFILE API
 // cookie handling
-ProfileRouter.get("/profile/view", userAuth, async(req, res)=>{
+ProfileRouter.get("/profile/view", userAuth, async (req, res) => {
+  try {
+    const user = req.user;
 
-    try{
-        const user = req.user;
-
-        console.log(user);
-        res.send(user);
-
-    }
-    catch (error) {
-        res.status(400).send("Error : " + error.message);
-    }
-
-})
-
-ProfileRouter.patch("/profile/update",userAuth, async(req, res)=>{
-    try{
-        if(!validateupdateProfileData(req)){
-            throw new Error("invalid request");
-        }
-
-        const Loggedinuser = req.user;
-        console.log(Loggedinuser);
+    console.log(user);
+    res.send(user);
+  } catch (error) {
+    res.status(400).send("Error : " + error.message);
+  }
+});
 
 
-        Object.keys(req.body).forEach((key)=> (Loggedinuser[key] = req.body[key] ))
 
-        await Loggedinuser.save();
 
-        console.log(Loggedinuser);
-        res.send(`${Loggedinuser.firstName} your profile is updated..`);
-
-    }
-    catch(error){
-        res.status(400).send("Error : " + error.message);
+ProfileRouter.patch("/profile/update", userAuth, async (req, res) => {
+  try {
+    if (!validateupdateProfileData(req)) {
+      throw new Error("invalid request");
     }
 
-})
+    const Loggedinuser = req.user;
+    console.log(Loggedinuser);
+
+    Object.keys(req.body).forEach((key) => (Loggedinuser[key] = req.body[key]));
+
+    await Loggedinuser.save();
+
+    console.log(Loggedinuser);
+    res.json({
+      message: `${Loggedinuser.firstName}, your profile updated successfuly`,
+      data: Loggedinuser,
+    });
+  } catch (error) {
+    res.status(400).send("Error : " + error.message);
+  }
+});
 
 
 
 
-
-ProfileRouter.patch("/forgottPass", async(req, res)=>{
-    try{
-        
-    }catch(error){
-        res.status(400).send("Error" + error.message);
-    }
-})
+ProfileRouter.patch("/forgottPass", async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(400).send("Error" + error.message);
+  }
+});
 
 module.exports = ProfileRouter;

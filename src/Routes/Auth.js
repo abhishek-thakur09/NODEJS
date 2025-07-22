@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 const { ValidationsignUp } = require("../utils/validation");
 const validator = require("validator");
 
-
 const express = require('express');
 const AuthRouter = express.Router();
 
@@ -15,18 +14,6 @@ AuthRouter.post("/signup", async (req, res) => {
     // Never trust on req.body
 
     // Validation of data should be necessary 
-
-
-    // console.log(req.body);
-
-
-    // const userobj = {
-    //     firstName: "Palak",
-    //     lastName: "Thakur",
-    //     emailId : "Palak@gmail.com",
-    //     Age : 20
-    // }
-
     try {
         // console.log(req.body.password);
 
@@ -37,13 +24,12 @@ AuthRouter.post("/signup", async (req, res) => {
         const { firstName,
             lastName,
             emailId,
+            photoUrl,
             password,
             gender,
-            photoUrl,
             about,
             age,
             skill } = req.body;
-
         // const passwordHash = bcrypt.hash(password, 10).then(function (pass) {
         //     // console.log(pass);
         //     return pass;

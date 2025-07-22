@@ -19,7 +19,7 @@ const validateupdateProfileData = (req)=>{
     const AllowedFields = [
         "firstName",
         "lastName",
-        "emailId",
+        // "emailId",
         "photoUrl",
         "gender",
         "about",
